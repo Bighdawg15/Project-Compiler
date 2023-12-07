@@ -1,0 +1,61 @@
+This Program has 4 registers. This is how we deal with that.
+
+----------------------------------------------------------------------------------
+Register Complications:
+----------------------------------------------------------------------------------
+Register Spilling: Some Variables are stored in memory instead of registers due to limited number of registers
+
+The Strategy:
+	Prioritize Variables: Determine which variables are used most frequently and keep them in the registers. This reduces the time taken to fetch these variables from memory.
+
+	Store and Load: When a variable not in a register is needed, choose one variable in a register, store it back to memory, and then load the needed variable into that register.
+
+	Reuse Registers: If there are some variables that are no longer needed in the rest of the program, their registers can be reused for other variables.
+
+Minimize number of store/load operations: More time consuming than just using registers
+
+
+
+
+
+
+in Y86, registers can be pushed to and popped from the stack. 
+This allows you to temporarily store and retrieve register values, effectively giving you more “registers” to work with.
+
+For tracking offsets of each spilled virtual register, you could use a map from virtual register ids to stack offsets. This would help manage the complexity of dealing with multiple spilled registers.
+-------------------------------------------------------------------
+# Assume %eax, %ebx, %ecx are already in use
+# We want to use %edx but it's also in use
+pushl %edx  # Save %edx to the stack
+
+# Now we can use %edx for another operation
+irmovl $10, %edx  # Load 10 into %edx
+
+# When we're done with %edx, restore its original value
+popl %edx  # Restore original value of %edx from the stack
+
+------------------------------------------------------------------------------------
+Example:
+------------------------------------------------------------------------------------
+# Assume %eax, %ecx, %edx, %ebx are the available registers
+# v1, v2, v3 are signed variables and vu1, vu2, vu3 are unsigned variables
+
+irmovl v1, %eax   # Load v1 into %eax
+irmovl v2, %ecx   # Load v2 into %ecx
+irmovl v3, %edx   # Load v3 into %edx
+irmovl vu1, %ebx  # Load vu1 into %ebx
+
+# Now suppose we need to use vu2
+rmmovl %eax, v1   # Store v1 back to memory
+irmovl vu2, %eax  # Load vu2 into %eax (reusing the register)
+
+# If we need v1 again later
+rmmovl %eax, vu2  # Store vu2 back to memory
+irmovl v1, %eax   # Load v1 back into %eax
+
+
+
+
+
+
+

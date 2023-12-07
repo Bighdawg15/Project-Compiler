@@ -1,0 +1,11 @@
+Zero Flag: Set if the result is zero
+Sign Flag: Set if the result is negative
+Overflow Flag: Set if there was signed overflow
+Carry Flag: Set if there was unsgined overflow
+
+----------------------------------------------------------
+Example:
+----------------------------------------------------------
+addl %ebx, %eax
+
+The flags would be set based on the result in %eax. If %eax is 0 after the addition, ZF is set. If %eax is negative, SF is set. If there was a signed overflow during the addition, OF is set.

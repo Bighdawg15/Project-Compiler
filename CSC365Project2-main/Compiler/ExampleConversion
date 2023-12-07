@@ -1,0 +1,209 @@
+//Not entirely sure how to write a compiler or how to run one, or even what it looks like, but here we go
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+HLC Example:
+//////////////////////////////////////////////////////////////////////////////////
+
+unsigned a b c
+signed x y z   //move into stack, but this would have a flag of somesort : Check with cmp
+
+a = 3
+b = 15 + a
+c = b * a / 10
+
+x = -5
+y = 13
+
+
+if c <= 10
+	x = y + 10
+else
+	x = y - 20
+
+while y > 0
+	print y
+	print \n
+	print x
+	print \n
+	y = y - 1
+
+//////////////////////////////////////////////////////////////////////////////////
+Assembly Example:
+//////////////////////////////////////////////////////////////////////////////////
+
+a dd 0
+b dd 0
+c dd 0
+x dd 0
+y dd 0
+z dd 0
+
+start:
+mov eax, 3
+mov a, eax
+
+mov eax, a
+add eax eax ebx
+mov b, eax
+
+mov eax, b
+mult eax eax ebx
+div eax eax 10
+mov c, eax
+
+mov eax, -5
+mov x, eax
+
+mov eax, 13
+mov y, eax
+
+cmp c, 10
+jle else
+
+mov eax, y
+add eax eax ebx
+mov x, eax
+jmp if
+
+else:
+mov eax, y
+sub eax eax ebx
+mov x, eax
+
+if:
+mov eax, y
+cmp eax, 0
+jle end_while
+
+while:
+print y
+print \n
+print x
+print \n
+
+jmp end_if
+
+end:
+add eax ebx ecx
+sub eax ebx ecx
+mult eax ebx ecx
+div eax ebx ecx
+
+addadd eax ebx ecx edx
+addsub eax ebx ecx edx
+addmult eax ebx ecx edx
+adddiv eax ebx ecx edx
+subadd eax ebx ecx edx
+subsub eax ebx ecx edx
+submult eax ebx ecx edx
+subdiv eax ebx ecx edx
+multadd eax ebx ecx edx
+multsub eax ebx ecx edx
+multmult eax ebx ecx edx
+multdiv eax ebx ecx edx
+divadd eax ebx ecx edx
+divsub eax ebx ecx edx
+divmult eax ebx ecx edx
+divdiv eax ebx ecx edx
+
+exit    #it does translate this, but this is more of a mental thing so not important
+
+//////////////////////////////////////////////////////////////////////////////////
+Machine Code Example:
+//////////////////////////////////////////////////////////////////////////////////
+
+FF 0005
+FF 0006
+FF 0007
+FF 0008
+FF 0009
+FF 0010
+
+start:
+00 0001 0000 
+00 0005 0001 
+
+00 0001 0005 
+A 0001 0001 0002
+00 0006 0001 
+
+00 0001 0006 
+C 0001 0001 0002
+D 0001 0001 0000
+00 0007 0001 
+
+00 0001 0000 
+00 0008 0001 
+
+00 0001 0000 
+00 0009 0001 
+
+CC 0000 0000 
+E2 else
+
+00 0001 0009 
+A 0001 0001 0002
+00 0008 0001 
+E0 if
+
+else:
+00 0001 0009 
+B 0001 0001 0002
+00 0008 0001 
+
+if:
+00 0001 0009 
+CC 0001 0000 
+E2 end_while
+
+while:
+print y
+print \n
+print x
+print \n
+
+E0 end_if
+
+end:
+A 0001 0002 0003
+B 0001 0002 0003
+C 0001 0002 0003
+D 0001 0002 0003
+
+AA 0001 0002 0003 0004
+AB 0001 0002 0003 0004
+AC 0001 0002 0003 0004
+AD 0001 0002 0003 0004
+BA 0001 0002 0003 0004
+BB 0001 0002 0003 0004
+BC 0001 0002 0003 0004
+BD 0001 0002 0003 0004
+CA 0001 0002 0003 0004
+CB 0001 0002 0003 0004
+CC 0001 0002 0003 0004
+CD 0001 0002 0003 0004
+DA 0001 0002 0003 0004
+DB 0001 0002 0003 0004
+DC 0001 0002 0003 0004
+DD 0001 0002 0003 0004
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

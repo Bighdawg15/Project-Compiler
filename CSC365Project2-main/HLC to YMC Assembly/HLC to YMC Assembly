@@ -1,0 +1,224 @@
+Example Code: 
+--------------------------------------------------------------
+unsigned a b c
+signed x y z
+
+a = 3
+b = 15 + a
+c = b * a / 10
+
+x = -5
+y = 13
+
+if c <= 10
+	x = y + 10
+else
+	x = y - 20
+
+while y > 0
+	print y
+	print \n
+	print x
+	print \n
+	y = y - 1
+--------------------------------------------------------------
+Python Code: (Experimental)
+--------------------------------------------------------------
+# unsigned a b c
+# signed x y z
+a = 3
+b = 15 + a
+c = b * a // 10 # integer division
+
+x = -5
+y = 13
+
+if c <= 10:
+	x = y + 10
+else:
+	x = y - 20
+
+while y > 0:
+	print(y)
+	print("\n")
+	print(x)
+	print("\n")
+	y = y - 1
+--------------------------------------------------------------
+C++ Code:
+--------------------------------------------------------------
+#include <iostream>
+using namespace std;
+
+int a, b, c;
+uint8_t x, y, z;
+
+a = 3;
+b = a;
+c = (3 * a) / 2;
+
+x = -5;
+y = x * -5;
+z = x + y - 5;
+
+
+if (c <= 12){
+	x = y - 5;
+}
+else{
+	x = y + 15;
+}
+
+while (x <= 0){
+	cout << a << endl;
+	cout << b << endl;
+	cout << c << endl;
+	cout << x << endl;
+	cout << y << endl;
+	cout << z << endl;
+}
+--------------------------------------------------------------
+HLC to YMC Assembly:
+--------------------------------------------------------------
+
+
+		High Level Code:			|		YMC Assembly
+------------------------------------------------------------------------------------------------------------------
+if (x = y) {}						|	cmp x,y			(Compare Statment that subtracts, but doesnt store output to compare)	
+else {}							|	je 'Location'		(Jump if equal)
+							|	jne 'Location'		(Jump if statments not equal)
+*If argument is true, then perfrom commands		|	jmp 'Location'		(Unconditional Jump)
+*cmp then jmp to location outside of loop		|	jle 'Location'		(Jump if less than or equal to)
+*else will happen if the statment isnt true		|	jl 'Location'		(Jump if less than)
+							|	jge 'Location'		(Jump if great than or equal to)
+							|	jg 'Location'		(Jump of greater than)
+							|	
+------------------------------------------------------------------------------------------------------------------
+while (x = y) {}					|	cmp x,y			(Compare Statment that subtracts, but doesnt store output to compare)	
+							|	je 'Location'		(Jump if equal)
+*if arguemnt is true, then repeat loop			|	jne 'Location'		(Jump if statments not equal)
+*cmp then jmp back to loop if statment is true		|	jmp 'Location'		(Unconditional Jump)
+*otherwise jmp out of loop				|	jle 'Location'		(Jump if less than or equal to)
+							|	jl 'Location'		(Jump if less than)
+							|	jge 'Location'		(Jump if great than or equal to)
+							|	jg 'Location'		(Jump of greater than)
+							|	
+------------------------------------------------------------------------------------------------------------------
+for () {}						|	cmp x,y			(Compare Statment that subtracts, but doesnt store output to compare)
+							|	je 'Location'		(Jump if equal)
+*Does function then checks and jumps			|	jne 'Location'		(Jump if statments not equal)
+*if true jmp to start of loop				|	jmp 'Location'		(Unconditional Jump)
+*if not true, it doesn't activate the cmp		|	jle 'Location'		(Jump if less than or equal to)	
+							|	jl 'Location'		(Jump if less than)
+*if arguemnt is true, then repeat loop			|	jge 'Location'		(Jump if great than or equal to)
+*cmp then jmp back to loop if statment is true		|	jg 'Location'		(Jump of greater than)
+*otherwise jmp out of loop				|
+							|
+------------------------------------------------------------------------------------------------------------------
+Y = Y + X						|	mov eax, 'Location Y'
+							|	mov ebx, 'Location X'
+*Store Variables into Registers				|	add eax, eax, ebx
+*Addition is done in the Registers			|	mov 'Location Y', eax
+							|	
+							|	add (Stored Register), (Variable Y), (Variable X)
+------------------------------------------------------------------------------------------------------------------
+Y = Y - X						|	mov eax, 'Location Y'
+							|	mov ebx, 'Location X'
+*Store Variables into Registers				|	sub eax, eax, ebx
+*Subtraction is done in the Registers			|	mov 'Location Y', eax
+							|	
+							|	sub (Stored Register), (Variable Y), (Variable X)
+------------------------------------------------------------------------------------------------------------------
+Y = Y * X						|	mov eax, 'Location Y'
+							|	mov ebx, 'Location X'
+*Store Variables into Registers				|	mult eax, eax, ebx
+*Multiplication is done in the Registers		|	mov 'Location Y', eax
+							|	
+							|	mult (Stored Register), (Variable Y), (Variable X)
+------------------------------------------------------------------------------------------------------------------
+Y = Y / X						|	mov eax, 'Location Y'
+							|	mov ebx, 'Location X'
+*Store Variables into Registers				|	div eax, eax, ebx
+*Division is done in the Registers			|	mov 'Location Y', eax
+							|	
+							|	div (Stored Register), (Variable Y), (Variable X)
+------------------------------------------------------------------------------------------------------------------
+Y = Y + X - Z						|	mov eax, 'Location Y'
+							|	mov ebx, 'Location X'
+							|	mov ecx, 'Location Z'
+*Store Variables into Registers				|	addsub eax, eax, ebx, ecx
+*AddSub is done in the Registers			|	mov 'Location Y', eax
+*Will add and then subtract in order			|	
+							|	addsub (Stored Register), (Variable Y), (Variable X), (Variable Z)
+------------------------------------------------------------------------------------------------------------------
+Y = Y + (X / Z)						|	mov eax, 'Location Y'
+							|	mov ebx, 'Location X'
+							|	mov ecx, 'Location Z'
+*Store Variables into Registers				|	adddiv eax, eax, ebx, ecx
+*AddDiv is done in the Registers			|	mov 'Location Y', eax
+							|	
+							|	adddiv (Stored Register), (Variable Y), (Variable X), (Variable Z)
+------------------------------------------------------------------------------------------------------------------
+Y = Y + (X * Z)						|	mov eax, 'Location Y'
+							|	mov ebx, 'Location X'
+							|	mov ecx, 'Location Z'
+*Store Variables into Registers				|	addmult eax, eax, ebx, ecx
+*AddMul is done in the Registers			|	mov 'Location Y', eax
+							|	
+							|	addmult (Stored Register), (Variable Y), (Variable X), (Variable Z)
+------------------------------------------------------------------------------------------------------------------
+Y = Y - (X / Z)						|	mov eax, 'Location Y'
+							|	mov ebx, 'Location X'
+							|	mov ecx, 'Location Z'
+*Store Variables into Registers				|	subdiv eax, eax, ebx, ecx
+*SubDiv is done in the Registers			|	mov 'Location Y', eax
+							|	
+							|	subdiv (Stored Register), (Variable Y), (Variable X), (Variable Z)
+------------------------------------------------------------------------------------------------------------------
+Y = Y - (X * Z)						|	mov eax, 'Location Y'
+							|	mov ebx, 'Location X'
+							|	mov ecx, 'Location Z'
+*Store Variables into Registers				|	submult eax, eax, ebx, ecx
+*SubMult is done in the Registers			|	mov 'Location Y', eax
+							|	
+							|	submult (Stored Register), (Variable Y), (Variable X), (Variable Z)
+------------------------------------------------------------------------------------------------------------------
+Y = Y * X / Z						|	mov eax, 'Location Y'
+							|	mov ebx, 'Location X'
+							|	mov ecx, 'Location Z'
+*Store Variables into Registers				|	multdiv eax, eax, ebx, ecx
+*MultDiv is done in the Registers			|	mov 'Location Y', eax
+							|	
+							|	multdiv (Stored Register), (Variable Y), (Variable X), (Variable Z)
+------------------------------------------------------------------------------------------------------------------
+int a, b, c;						|	mov 'a or b or c', 'Location a or b or c'
+							|	
+------------------------------------------------------------------------------------------------------------------
+uint8_t x, y, z;					|	mov 'x or y or z', 'Location x or y or z'
+							|
+*Sets of sign flag to differentiate			|	
+------------------------------------------------------------------------------------------------------------------
+cout << 'Variable' or "Message" << endl;		|	variable db "Message of somesort" or Array to hold each letter of message
+							|	variable;
+							|
+							|
+*Read each character individually, store in declared	| 	Example Macro:
+ array, then print as needed with loop			|		prtStr macro X
+							|			mov ah,09h		; assign HOB of ax the value 9 to invoke the DOS API string write service
+							|			mov dx,offset X	; assign dx the memory address of where string msg is stored
+							|			int 21h			; go do DOS interrupt
+							|		endm
+------------------------------------------------------------------------------------------------------------------
+							|
+------------------------------------------------------------------------------------------------------------------
+							|
+------------------------------------------------------------------------------------------------------------------
+							|
+------------------------------------------------------------------------------------------------------------------
+							|
+------------------------------------------------------------------------------------------------------------------
+
+
+
+
+

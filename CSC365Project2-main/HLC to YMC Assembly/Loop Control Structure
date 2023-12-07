@@ -1,0 +1,117 @@
+Translate a loop control structure to YMC assembly. Things to think about: 
+    *In a loop, you will encounter conditional and unconditional jumps. How will you encode the jump address when you havent yet loaded the program into the memory and don’t know that instruction's address? 
+    *Maybe the function that 'loads' the program into the memory 'adjusts' the code before loading it? Maybe some other way? 
+
+
+--------------------------------------------------------------
+HLC to YMC Assembly:
+--------------------------------------------------------------
+
+
+	      	High Level Code:		            	|		      YMC Assembly
+------------------------------------------------------------------------------------------------------------------
+while (x == y) {}					        |	cmp x,y			(Compare Statment that subtracts, but doesnt store output to compare)	
+							        |	je 'Location'		(Jump if equal)
+*if arguemnt is true, then repeat loop			   	|	jne 'Location'		(Jump if statments not equal)
+*cmp then jmp back to loop if statment is true			|	jmp 'Location'		(Unconditional Jump)
+*otherwise jmp out of loop				        |	jle 'Location'		(Jump if less than or equal to)
+							        |	jl 'Location'		(Jump if less than)
+							        |	jge 'Location'		(Jump if great than or equal to)
+							        |	jg 'Location'		(Jump of greater than)
+							        |	
+------------------------------------------------------------------------------------------------------------------
+for (x == y) {}						        |	cmp x,y			(Compare Statment that subtracts, but doesnt store output to compare)
+							        |	je 'Location'		(Jump if equal)
+*Does function then checks and jumps			   	|	jne 'Location'		(Jump if statments not equal)
+*if true jmp to start of loop				        |	jmp 'Location'		(Unconditional Jump)
+*if not true, it doesn't activate the cmp		   	|	jle 'Location'		(Jump if less than or equal to)	
+							        |	jl 'Location'		(Jump if less than)
+*if arguemnt is true, then repeat loop			   	|	jge 'Location'		(Jump if great than or equal to)
+*cmp then jmp back to loop if statment is true			|	jg 'Location'		(Jump of greater than)
+*otherwise jmp out of loop				        |
+							        |
+------------------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+Actual Ideas:
+-----------------------------------------------------------------------------
+Y86 assembly: Jumps are also handled through relative addressing. 
+	The jump address is encoded as a displacement relative to the current instruction’s address.
+
+Conditional Jump (jxx): A Condition Jump (jle, jl, jne, je, jg, jge), a 4-byte constant that represents the displacement from the current program counter (PC) to the target instruction. This displacement is signed and is added to the PC if the condition is met.
+
+Unconditional Jump (jmp): The jmp instruction, a 4-byte constant that represents the displacement from the current PC to the target instruction. This displacement is always added to the PC.
+
+The loop label serves as a placeholder for the address of the instruction where the loop begins.
+
+//When the program hasn’t been loaded into memory yet, jumps are encoded using displacements. 
+
+
+
+------------------------------------------------------------------------------------
+Example:
+------------------------------------------------------------------------------------
+# Assume %eax is the loop counter
+irmovl $10, %eax   # Initialize loop counter to 10
+
+loop:
+    # Your loop code here
+
+    irmovl $1, %ebx  # Prepare to decrement loop counter
+    subl %ebx, %eax  # Decrement loop counter
+
+    jg loop          # Jump back to start of loop if counter > 0
+
+----------------------------------------------------------------------------
+Y86 Example:
+----------------------------------------------------------------------------
+# Assume %eax, %ecx, %edx, %ebx are the available registers
+# v1, v2, v3 are signed variables and vu1, vu2, vu3 are unsigned variables
+
+irmovl v1, %eax   # Load v1 into %eax
+irmovl v2, %ecx   # Load v2 into %ecx
+irmovl v3, %edx   # Load v3 into %edx
+irmovl vu1, %ebx  # Load vu1 into %ebx
+
+# Now suppose we need to use vu2
+rmmovl %eax, (v1)   # Store v1 back to memory
+irmovl vu2, %eax  # Load vu2 into %eax (reusing the register)
+
+# If we need v1 again later
+rmmovl %eax, (vu2)  # Store vu2 back to memory
+irmovl v1, %eax   # Load v1 back into %eax
+
+
+---------------------------------------------------------------------------
+For-Loop:
+---------------------------------------------------------------------------
+# Assume %eax is the loop counter
+irmovl $0, %eax   # Initialize loop counter to 0
+
+for_loop:
+    # Your loop code here
+
+    irmovl $1, %ebx  # Prepare to increment loop counter
+    addl %ebx, %eax  # Increment loop counter
+
+    irmovl $10, %ebx
+    subl %ebx, %eax  # Compare loop counter with 10
+    jl for_loop      # Jump back to start of loop if counter < 10
+
+---------------------------------------------------------------------------
+While-Loop:
+---------------------------------------------------------------------------
+# Assume %eax is the variable v1
+irmovl v1, %eax   # Load v1 into %eax
+
+while_loop:
+    # Your loop code here
+
+    irmovl $10, %ebx
+    subl %ebx, %eax  # Compare v1 with 10
+    jl while_loop    # Jump back to start of loop if v1 < 10
+
+
+
+
